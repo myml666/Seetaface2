@@ -11,6 +11,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".FaceDetectorActivity">
+        </activity>
+        <activity android:name=".PointDetectorActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

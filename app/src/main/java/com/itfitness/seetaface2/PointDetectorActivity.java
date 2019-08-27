@@ -6,16 +6,14 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.os.Bundle;
 import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 
-
 import com.itfitness.seetaface2.utils.ConvertUtil;
-import com.itfitness.seetaface2.utils.FileUtil;
 import com.seeta.sdk.FaceDetector2;
 import com.seeta.sdk.PointDetector2;
 import com.seeta.sdk.SeetaImageData;
@@ -23,9 +21,11 @@ import com.seeta.sdk.SeetaPointF;
 import com.seeta.sdk.SeetaRect;
 
 import java.io.File;
-import java.nio.ByteBuffer;
 
-public class FaceDetectorActivity extends AppCompatActivity {
+/**
+ * 特征点检测
+ */
+public class PointDetectorActivity extends AppCompatActivity {
     private Button mBt;
     private ImageView mImg;
     private FaceDetector2 faceDetector;
@@ -52,17 +52,14 @@ public class FaceDetectorActivity extends AppCompatActivity {
                     //利用Bitmap创建Canvas，为了在图像上绘制人脸区域
                     Canvas canvas = new Canvas(copy);
                     Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+                    paint.setColor(Color.RED);
                     paint.setStyle(Paint.Style.STROKE);
                     paint.setStrokeWidth(3);
                     //绘制出所有的检测出来的人脸的区域
                     for(int i = 0 ; i < faceRects.length ; i++){
-                        paint.setColor(Color.BLUE);
                         SeetaRect faceRect = faceRects[i];
-                        SeetaPointF[] seetaPoints = pointDetector.Detect(seetaImageData, faceRect);//特征点检测
-                        Rect rect = new Rect(faceRect.x,faceRect.y,faceRect.x+faceRect.width,faceRect.y+faceRect.height);
-                        canvas.drawRect(rect,paint);
+                        SeetaPointF[] seetaPoints = pointDetector.Detect(seetaImageData, faceRect);//根据检测到的人脸进行特征点检测
                         if(seetaPoints.length>0){
-                            paint.setColor(Color.RED);
                             for(SeetaPointF seetaPoint:seetaPoints){
                                 //绘制特征点
                                 canvas.drawCircle((float) seetaPoint.x,(float) seetaPoint.y,5,paint);
