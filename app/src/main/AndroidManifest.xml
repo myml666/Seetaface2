@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.itfitness.seetaface2">
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-feature android:name="android.hardware.camera" />
+    <uses-feature android:name="android.hardware.camera.autofocus" />
+    <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
     <application
@@ -13,6 +17,14 @@
         <activity android:name=".FaceDetectorActivity">
         </activity>
         <activity android:name=".PointDetectorActivity">
+        </activity>
+        <activity android:name=".FaceRecognizerActivity">
+        </activity>
+        <activity android:name=".facelogin.LoginActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".facelogin.FaceLoginActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".facelogin.FaceInitActivity" android:screenOrientation="portrait"/>
+
+        <activity android:name=".MainActivity" android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

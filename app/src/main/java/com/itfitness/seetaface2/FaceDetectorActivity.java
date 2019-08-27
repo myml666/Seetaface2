@@ -29,7 +29,6 @@ public class FaceDetectorActivity extends AppCompatActivity {
     private Button mBt;
     private ImageView mImg;
     private FaceDetector2 faceDetector;
-    private PointDetector2 pointDetector;
     private SeetaRect[] faceRects;
     private Bitmap bitmap;
     private SeetaImageData seetaImageData;
@@ -37,7 +36,7 @@ public class FaceDetectorActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_facedetector);
         //将模型拷贝到SD卡中
         //FileUtil.CopyAssets(this,"SeetaFaceDetector2.0.ats",Environment.getExternalStorageDirectory()+ File.separator+"SeetaFaceDetector2.0.ats");
         initView();
@@ -58,16 +57,8 @@ public class FaceDetectorActivity extends AppCompatActivity {
                     for(int i = 0 ; i < faceRects.length ; i++){
                         paint.setColor(Color.BLUE);
                         SeetaRect faceRect = faceRects[i];
-                        SeetaPointF[] seetaPoints = pointDetector.Detect(seetaImageData, faceRect);//特征点检测
                         Rect rect = new Rect(faceRect.x,faceRect.y,faceRect.x+faceRect.width,faceRect.y+faceRect.height);
                         canvas.drawRect(rect,paint);
-                        if(seetaPoints.length>0){
-                            paint.setColor(Color.RED);
-                            for(SeetaPointF seetaPoint:seetaPoints){
-                                //绘制特征点
-                                canvas.drawCircle((float) seetaPoint.x,(float) seetaPoint.y,5,paint);
-                            }
-                        }
                     }
                     mImg.setImageBitmap(copy);
                 }
@@ -81,7 +72,6 @@ public class FaceDetectorActivity extends AppCompatActivity {
     private void initFace() {
         //初始化检测器（参数是模型在SD卡的位置）
         faceDetector = new FaceDetector2(Environment.getExternalStorageDirectory()+ File.separator+"seetaface"+File.separator+"SeetaFaceDetector2.0.ats");
-        pointDetector = new PointDetector2(Environment.getExternalStorageDirectory()+ File.separator+"seetaface"+File.separator+"SeetaPointDetector2.0.pts5.ats");  //特征点
         bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.heying);
         //利用SeetaFace2提供的转换方法获取SeetaRect（人脸识别结果）
         seetaImageData = ConvertUtil.ConvertToSeetaImageData(bitmap);
@@ -91,5 +81,11 @@ public class FaceDetectorActivity extends AppCompatActivity {
     private void initView() {
         mBt = findViewById(R.id.bt_face);
         mImg = findViewById(R.id.img);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        faceDetector.dispose();
     }
 }

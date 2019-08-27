@@ -1,20 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".FaceDetectorActivity">
-
+    android:layout_height="match_parent">
     <Button
-        android:id="@+id/bt_face"
+        android:id="@+id/bt_one"
         android:text="人脸检测"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
-    <ImageView
-        android:id="@+id/img"
-        android:src="@drawable/heying"
-        android:layout_width="wrap_content"
+    <Button
+        android:id="@+id/bt_two"
+        android:text="人脸特征点提取"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+    <Button
+        android:id="@+id/bt_three"
+        android:text="人脸匹配"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+    <Button
+        android:id="@+id/bt_four"
+        android:text="人脸登录实战"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 </LinearLayout>

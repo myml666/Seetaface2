@@ -37,7 +37,7 @@ public class PointDetectorActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_pointdetector);
         //将模型拷贝到SD卡中
         //FileUtil.CopyAssets(this,"SeetaFaceDetector2.0.ats",Environment.getExternalStorageDirectory()+ File.separator+"SeetaFaceDetector2.0.ats");
         initView();
@@ -88,5 +88,16 @@ public class PointDetectorActivity extends AppCompatActivity {
     private void initView() {
         mBt = findViewById(R.id.bt_face);
         mImg = findViewById(R.id.img);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if(faceDetector!=null){
+            faceDetector.dispose();
+        }
+        if(pointDetector!=null){
+            pointDetector.dispose();
+        }
     }
 }
