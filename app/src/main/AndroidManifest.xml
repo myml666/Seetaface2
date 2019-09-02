@@ -23,6 +23,7 @@
         <activity android:name=".facelogin.LoginActivity" android:screenOrientation="portrait"/>
         <activity android:name=".facelogin.FaceLoginActivity" android:screenOrientation="portrait"/>
         <activity android:name=".facelogin.FaceInitActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".facefind.FaceFindActivity" android:screenOrientation="portrait"/>
 
         <activity android:name=".MainActivity" android:screenOrientation="portrait">
             <intent-filter>

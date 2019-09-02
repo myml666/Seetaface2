@@ -6,29 +6,19 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
-import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
-
-
+import com.itfitness.seetaface2.engine.FaceEngine;
 import com.itfitness.seetaface2.utils.ConvertUtil;
-import com.itfitness.seetaface2.utils.FileUtil;
-import com.seeta.sdk.FaceDetector2;
-import com.seeta.sdk.PointDetector2;
 import com.seeta.sdk.SeetaImageData;
-import com.seeta.sdk.SeetaPointF;
 import com.seeta.sdk.SeetaRect;
-
-import java.io.File;
-import java.nio.ByteBuffer;
 
 public class FaceDetectorActivity extends AppCompatActivity {
     private Button mBt;
     private ImageView mImg;
-    private FaceDetector2 faceDetector;
     private SeetaRect[] faceRects;
     private Bitmap bitmap;
     private SeetaImageData seetaImageData;
@@ -71,11 +61,12 @@ public class FaceDetectorActivity extends AppCompatActivity {
      */
     private void initFace() {
         //初始化检测器（参数是模型在SD卡的位置）
-        faceDetector = new FaceDetector2(Environment.getExternalStorageDirectory()+ File.separator+"seetaface"+File.separator+"SeetaFaceDetector2.0.ats");
         bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.heying);
         //利用SeetaFace2提供的转换方法获取SeetaRect（人脸识别结果）
         seetaImageData = ConvertUtil.ConvertToSeetaImageData(bitmap);
-        faceRects = faceDetector.Detect(seetaImageData);
+        if(FaceEngine.FACEDETECTOR!=null){
+            faceRects = FaceEngine.FACEDETECTOR.Detect(seetaImageData);
+        }
     }
 
     private void initView() {
@@ -86,6 +77,7 @@ public class FaceDetectorActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        faceDetector.dispose();
+        //用了一个引擎后就不需要释放了
+//        FaceEngine.FACEDETECTOR.dispose();
     }
 }

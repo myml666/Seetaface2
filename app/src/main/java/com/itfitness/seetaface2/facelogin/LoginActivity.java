@@ -13,7 +13,8 @@ import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
 import com.itfitness.seetaface2.R;
-import com.itfitness.seetaface2.camera.FaceCameraView;
+import com.itfitness.seetaface2.widget.FaceCameraView;
+import com.itfitness.seetaface2.engine.FaceEngine;
 import com.itfitness.seetaface2.utils.ConvertUtil;
 import com.seeta.sdk.SeetaImageData;
 import com.seeta.sdk.SeetaPointF;
@@ -54,7 +55,7 @@ public class LoginActivity extends AppCompatActivity{
         faceCameraView.setPreviewCallback(new FaceCameraView.PreviewCallback() {
             @Override
             public void onPreview(final byte[] data, final Camera camera) {
-                if(FaceLoginActivity.FACEDETECTOR!=null&&FaceLoginActivity.FACERECOGNIZER!=null&&FaceLoginActivity.POINTDETECTOR!=null){
+                if(FaceEngine.FACEDETECTOR!=null&&FaceEngine.FACERECOGNIZER!=null&&FaceEngine.POINTDETECTOR!=null){
                     new Thread(new Runnable() {
                         @Override
                         public void run() {
@@ -75,13 +76,13 @@ public class LoginActivity extends AppCompatActivity{
                                         m.setRotate(-90, (float) bmp.getWidth() / 2, (float) bmp.getHeight() / 2);
                                         Bitmap bm = Bitmap.createBitmap(bmp, 0, 0, bmp.getWidth(), bmp.getHeight(), m, true);
                                         SeetaImageData loginSeetaImageData = ConvertUtil.ConvertToSeetaImageData(bm);
-                                        SeetaRect[] faceRects = FaceLoginActivity.FACEDETECTOR.Detect(loginSeetaImageData);
+                                        SeetaRect[] faceRects = FaceEngine.FACEDETECTOR.Detect(loginSeetaImageData);
                                         if(faceRects.length>0){
                                             //获取人脸区域（这里只有一个所以取0）
                                             SeetaRect faceRect = faceRects[0];
-                                            SeetaPointF[] seetaPoints = FaceLoginActivity.POINTDETECTOR.Detect(loginSeetaImageData, faceRect);//根据检测到的人脸进行特征点检测
+                                            SeetaPointF[] seetaPoints = FaceEngine.POINTDETECTOR.Detect(loginSeetaImageData, faceRect);//根据检测到的人脸进行特征点检测
                                             float[] similarity = new float[1];//用来存储人脸相似度值
-                                            FaceLoginActivity.FACERECOGNIZER.Recognize(loginSeetaImageData, seetaPoints, similarity);//匹配
+                                            FaceEngine.FACERECOGNIZER.Recognize(loginSeetaImageData, seetaPoints, similarity);//匹配
                                             if(similarity[0]>0.7){
                                                 handler.sendEmptyMessage(1);
                                             }else {

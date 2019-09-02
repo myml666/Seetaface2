@@ -1,5 +1,6 @@
-package com.itfitness.seetaface2.facelogin;
+package com.itfitness.seetaface2.facefind;
 
+import android.annotation.SuppressLint;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.ImageFormat;
@@ -10,48 +11,52 @@ import android.hardware.Camera;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.widget.Toast;
 
 import com.itfitness.seetaface2.R;
-import com.itfitness.seetaface2.widget.FaceCameraView;
 import com.itfitness.seetaface2.engine.FaceEngine;
 import com.itfitness.seetaface2.utils.ConvertUtil;
+import com.itfitness.seetaface2.widget.FaceCameraView;
+import com.itfitness.seetaface2.widget.FaceRectView;
 import com.seeta.sdk.SeetaImageData;
-import com.seeta.sdk.SeetaPointF;
 import com.seeta.sdk.SeetaRect;
 
 import java.io.ByteArrayOutputStream;
 
-public class FaceInitActivity extends AppCompatActivity{
-    private FaceCameraView faceInitCameraView;
-    private boolean isScanning = false;
-    Handler handler = new Handler() {
+public class FaceFindActivity extends AppCompatActivity {
+    private FaceCameraView faceCameraView;
+    private FaceRectView faceRectView;
+    private boolean isScaing = false;
+    @SuppressLint("HandlerLeak")
+    private Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-            Toast.makeText(FaceInitActivity.this, "信息录入成功", Toast.LENGTH_SHORT).show();
-            finish();
+            faceRectView.setFaceDatas((SeetaRect[]) msg.obj);
+            isScaing = false;
         }
     };
+
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
+        setContentView(R.layout.activity_facefind);
         initView();
+        initPreViewCallback();
     }
-    private void initView(){
-        faceInitCameraView = (FaceCameraView) findViewById(R.id.camera2);
-        faceInitCameraView.setPreviewCallback(new FaceCameraView.PreviewCallback() {
+
+    private void initPreViewCallback() {
+        faceCameraView.setPreviewCallback(new FaceCameraView.PreviewCallback() {
             @Override
             public void onPreview(final byte[] data, final Camera camera) {
-                if(FaceEngine.FACEDETECTOR!=null&&FaceEngine.FACERECOGNIZER!=null&&FaceEngine.POINTDETECTOR!=null){
+                if (FaceEngine.FACEDETECTOR != null && FaceEngine.FACERECOGNIZER != null && FaceEngine.POINTDETECTOR != null) {
                     new Thread(new Runnable() {
                         @Override
                         public void run() {
                             //识别中不处理其他帧数据
-                            if (!isScanning) {
-                                isScanning = true;
+                            if (!isScaing) {
+                                isScaing = true;
                                 try {
                                     //获取Camera预览尺寸
                                     Camera.Size size = camera.getParameters().getPreviewSize();
@@ -65,27 +70,16 @@ public class FaceInitActivity extends AppCompatActivity{
                                         Matrix m = new Matrix();
                                         m.setRotate(-90, (float) bmp.getWidth() / 2, (float) bmp.getHeight() / 2);
                                         Bitmap bm = Bitmap.createBitmap(bmp, 0, 0, bmp.getWidth(), bmp.getHeight(), m, true);
-                                        SeetaImageData RegistSeetaImageData = ConvertUtil.ConvertToSeetaImageData(bm);
-                                        SeetaRect[] faceRects = FaceEngine.FACEDETECTOR.Detect(RegistSeetaImageData);
+                                        SeetaImageData loginSeetaImageData = ConvertUtil.ConvertToSeetaImageData(bm);
+                                        SeetaRect[] faceRects = FaceEngine.FACEDETECTOR.Detect(loginSeetaImageData);
                                         if(faceRects.length>0){
-                                            //获取人脸区域（这里只有一个所以取0）
-                                            SeetaRect faceRect = faceRects[0];
-                                            SeetaPointF[] seetaPoints = FaceEngine.POINTDETECTOR.Detect(RegistSeetaImageData, faceRect);//根据检测到的人脸进行特征点检测
-                                            FaceEngine.FACERECOGNIZER.Register(RegistSeetaImageData, seetaPoints);//将人脸注册到SeetaFace2数据库
-                                            handler.sendEmptyMessage(0);
-                                        }else {
-                                            //如果检测不到人脸给予如下提示
-                                            runOnUiThread(new Runnable() {
-                                                @Override
-                                                public void run() {
-                                                    Toast.makeText(FaceInitActivity.this, "请保持手机不要晃动", Toast.LENGTH_SHORT).show();
-                                                }
-                                            });
-                                            isScanning = false;
+                                            Message obtain = Message.obtain();
+                                            obtain.obj = faceRects;
+                                            handler.sendMessage(obtain);
                                         }
                                     }
                                 } catch (Exception ex) {
-                                    isScanning = false;
+                                    isScaing = false;
                                 }
                             }
                         }
@@ -94,5 +88,10 @@ public class FaceInitActivity extends AppCompatActivity{
                 }
             }
         });
+    }
+
+    private void initView() {
+        faceCameraView = findViewById(R.id.camera_findface);
+        faceRectView = findViewById(R.id.facerect);
     }
 }

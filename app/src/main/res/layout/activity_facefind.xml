@@ -1,12 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
     <com.itfitness.seetaface2.widget.FaceCameraView
-        android:id="@+id/camera2"
+        android:id="@+id/camera_findface"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        />
+        android:layout_height="match_parent" />
+    <com.itfitness.seetaface2.widget.FaceRectView
+        android:id="@+id/facerect"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 </RelativeLayout>
